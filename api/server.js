@@ -17,16 +17,16 @@ server.get('/api/users', (req, res) => {
     });
 });
 
-server.get('/api/users/:id', async (req, res) => {
+server.get('/api/users/:id', (req, res) => {
   const { id } = req.params;
-  const data = await User.findById(id)
+  User.findById(id)
     .then((user) => {
       if (!user) {
-        res.status(404).json({
-          message: `The user with the specified ${id} does not exist`,
+        res.status(400).json({
+          message: `User with ${id} does not exist`,
         });
       } else {
-        res.status(200).json(data);
+        res.status(200).json(user);
       }
     })
     .catch((err) => {
