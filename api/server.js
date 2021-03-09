@@ -17,4 +17,23 @@ server.get('/api/users', (req, res) => {
     })
 })
 
+server.get('/api/users/:id', async (req, res) => {
+    const {id} = req.params
+    const data = await User.findById(id)
+    .then(user => {
+        if(!user) {
+            res.status(404).json({
+                message: `Dog with ${id} does not exist`
+            })
+        } else {
+            res.status(200).json(data)
+        }
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: err.message
+        })
+    })
+})
+
 module.exports = server; 
