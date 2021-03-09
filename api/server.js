@@ -23,7 +23,7 @@ server.get('/api/users/:id', async (req, res) => {
     .then((user) => {
       if (!user) {
         res.status(404).json({
-          message: `Dog with ${id} does not exist`,
+          message: `The user with the specified ${id} does not exist`,
         });
       } else {
         res.status(200).json(data);
@@ -38,21 +38,21 @@ server.get('/api/users/:id', async (req, res) => {
 
 server.post('/api/users', (req, res) => {
   const newUser = req.body;
-  const data = User.insert(newUser)
-    .then((user) => {
-      if (!newUser.name || !newUser.bio) {
-        res.status(422).json({
-          message: 'Name and Bio are required',
-        });
-      } else {
-        res.status(201).json(data);
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: err.message,
-      });
+  if (!newUser.name || !newUser.bio) {
+    res.status(400).json({
+      message: 'Please provide name and bio for the user',
     });
+  } else {
+    User.insert(newUser)
+      .then((user) => {
+        res.status(201).json(user);
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: err.message,
+        });
+      });
+  }
 });
 
 server.put('/api/users/:id', async (req, res) => {
@@ -62,7 +62,7 @@ server.put('/api/users/:id', async (req, res) => {
   try {
     if (!id && changes) {
       res.status(404).json({
-        message: `That ${id} and ${changes.name} are not in the database`,
+        message: `The user ${id} and ${changes.name} are not in the database`,
       });
     } else {
       res.status(201).json(data);
