@@ -36,4 +36,24 @@ server.get('/api/users/:id', async (req, res) => {
     })
 })
 
+server.post('/api/users', (req, res) => {
+    const newUser = req.body
+    const data = User.insert(newUser)
+    .then(user => {
+        if(!newUser.name || !newUser.bio) {
+            res.status(422).json({
+                message: 'Name and Bio are required'
+            })
+        } else {
+            res.status(201).json(data)
+        }
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: err.message
+        })
+    })
+})
+
+
 module.exports = server; 
