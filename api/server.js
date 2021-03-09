@@ -55,5 +55,23 @@ server.post('/api/users', (req, res) => {
     })
 })
 
+server.put('/api/users/:id', async (req, res) => {
+    const {id} = req.params
+    const changes = req.body
+    const data = await User.update(id, changes)
+    try {
+        if(!id && changes) {
+            res.status(404).json({
+                message: `That ${id} and ${changes.name} are not in the database`
+            })
+        } else {
+            res.status(201).json(data)
+        }
+    } catch(err) {
+        res.status(500).json({
+            message: err.message
+        })
+    }
+})
 
 module.exports = server; 
